@@ -17,3 +17,18 @@ mvn spring-boot:run
 
 Once both servers are up and running, check the axon dashboard at localhost:8024, 
 If you see image in the overview just like the image given in repository root, then it is running properly.
+
+Then hit this api using curl:
+
+curl --location 'localhost:8081/messages/send' \
+--header 'Content-Type: application/json' \
+--data '[
+    {
+        "id": 1,
+        "value": 800
+    },
+    {
+        "id": 2,
+        "value": 800
+    }
+]'

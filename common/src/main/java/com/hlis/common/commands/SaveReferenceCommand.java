@@ -12,8 +12,8 @@ import lombok.Data;
 public class SaveReferenceCommand {
 	
 	@TargetAggregateIdentifier
-	private Integer idReference;
-	private Integer idMessage;
+	private String idReference;
+	private String idMessage;
 	private Integer value;
 	private LocalDateTime dateTime;
 

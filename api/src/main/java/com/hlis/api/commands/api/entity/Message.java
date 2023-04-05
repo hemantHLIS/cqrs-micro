@@ -18,10 +18,10 @@ import lombok.NoArgsConstructor;
 public class Message {
 
 	@Id
-	private Integer idMessage;
+	private String idMessage;
 	private String message;
 	
-	private Integer idReference;
+	private String idReference;
 	
 	private LocalDateTime referenceDateTime;
 	private LocalDateTime createDateTime;

@@ -12,8 +12,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class UpdateMessageEvent {
-	private Integer idMessage;
-	private Integer idReference;
+	private String idMessage;
+	private String idReference;
 
 	private LocalDateTime referenceDateTime;
 	private LocalDateTime updateDateTime;

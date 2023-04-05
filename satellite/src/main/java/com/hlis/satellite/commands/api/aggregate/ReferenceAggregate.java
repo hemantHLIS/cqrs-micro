@@ -21,8 +21,8 @@ import lombok.NoArgsConstructor;
 public class ReferenceAggregate {
 
 	@AggregateIdentifier
-	private Integer idReference;
-	private Integer idMessage;
+	private String idReference;
+	private String idMessage;
 	private Integer value;
 	private LocalDateTime dateTime;
 	

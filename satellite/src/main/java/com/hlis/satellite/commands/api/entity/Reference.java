@@ -18,8 +18,8 @@ import lombok.NoArgsConstructor;
 public class Reference {
 
 	@Id
-	private Integer idReference;
-	private Integer idMessage;
+	private String idReference;
+	private String idMessage;
 	private Integer value;
 	private LocalDateTime dateTime;
 }

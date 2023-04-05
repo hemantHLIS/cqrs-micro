@@ -14,8 +14,8 @@ import lombok.NoArgsConstructor;
 public class SaveReferenceEvent {
 
 	
-	private Integer idReference;
-	private Integer idMessage;
+	private String idReference;
+	private String idMessage;
 	private Integer value;
 	private LocalDateTime dateTime;
 }

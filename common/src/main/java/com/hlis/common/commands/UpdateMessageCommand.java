@@ -15,9 +15,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class UpdateMessageCommand {
 	@TargetAggregateIdentifier
-	private Integer idMessage;
-	private Integer idReference;
-
+	private String idMessage;
+	private String idReference;
 	private LocalDateTime referenceDateTime;
 	private LocalDateTime updateDateTime;
 

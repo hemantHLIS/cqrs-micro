@@ -17,7 +17,7 @@ public class SaveMessageCommand {
 
 	
 	@TargetAggregateIdentifier
-	private Integer idMessage;
+	private String idMessage;
 	private String message;
 	
 	private Integer idReference;

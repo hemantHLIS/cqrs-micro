@@ -2,10 +2,12 @@ package com.hlis.api.commands.api.controller;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.axonframework.messaging.responsetypes.ResponseTypes;
 import org.axonframework.queryhandling.QueryGateway;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,12 +34,10 @@ public class ApiCommandController {
 	@PostMapping("/send")
 	public String sendMessages(@RequestBody List<MessageModel> messageModels) {
 		
-		Long count = queryGateway.query(new MessageQuery(), ResponseTypes.instanceOf(Long.class)).join();
-		
 		
 		SaveMessageCommand saveMessageCommand = SaveMessageCommand
 				.builder()
-				.idMessage(count.intValue()+1)
+				.idMessage(UUID.randomUUID().toString())
 				.message(ApplicationUtils.generateJSONFromObject(messageModels))
 				.createDateTime(LocalDateTime.now())
 				.build();

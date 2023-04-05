@@ -13,9 +13,9 @@ import lombok.NoArgsConstructor;
 @Builder
 public class SaveMessageEvent {
 
-	private Integer idMessage;
+	private String idMessage;
 	private String message;
-	private Integer idReference;
+	private String idReference;
 	private LocalDateTime referenceDateTime;
 	private LocalDateTime createDateTime;
 	private LocalDateTime updateDateTime;

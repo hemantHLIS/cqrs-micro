@@ -2,6 +2,7 @@ package com.hlis.api.commands.api.saga;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.axonframework.messaging.responsetypes.ResponseTypes;
@@ -12,7 +13,6 @@ import org.axonframework.queryhandling.QueryGateway;
 import org.axonframework.spring.stereotype.Saga;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.hlis.api.commands.api.command.SaveMessageCommand;
 import com.hlis.api.commands.api.events.SaveMessageEvent;
 import com.hlis.common.commands.SaveReferenceCommand;
 import com.hlis.common.commands.UpdateMessageCommand;
@@ -34,10 +34,10 @@ public class MessageProcessingSaga {
 	@SuppressWarnings("unchecked")
 	@SagaEventHandler(associationProperty = "idMessage")
 	@StartSaga
+	@EndSaga
 	private void handle(SaveMessageEvent saveMessageEvent) {
 		log.info("Save message event in saga for id:" + saveMessageEvent.getIdMessage());
 
-		Long referenceCount = queryGateway.query(new ReferenceQuery(), ResponseTypes.instanceOf(Long.class)).join();
 
 		List<MessageModel> messageModels = (List<MessageModel>) ApplicationUtils.generateObjectFromJSON(saveMessageEvent.getMessage(), MessageModel.class, true);
 		
@@ -49,7 +49,7 @@ public class MessageProcessingSaga {
 		SaveReferenceCommand saveReferenceCommand = SaveReferenceCommand
 				.builder()
 				.idMessage(saveMessageEvent.getIdMessage())
-				.idReference(referenceCount.intValue()+1)
+				.idReference(UUID.randomUUID().toString())
 				.value(sum)
 				.dateTime(LocalDateTime.now())
 				.build();
@@ -57,21 +57,21 @@ public class MessageProcessingSaga {
 		commandGateway.sendAndWait(saveReferenceCommand);
 	}
 	
-	@SagaEventHandler(associationProperty = "idMessage")
-	@EndSaga
-	private void handle(SaveReferenceEvent saveReferenceEvent) {
-		log.info("Saved reference data in db with id::{}",saveReferenceEvent.getIdReference());
-		
-		UpdateMessageCommand updateMessageCommand = UpdateMessageCommand
-				.builder()
-				.idMessage(saveReferenceEvent.getIdMessage())
-				.idReference(saveReferenceEvent.getIdReference())
-				.referenceDateTime(saveReferenceEvent.getDateTime())
-				.updateDateTime(LocalDateTime.now())
-				.build();
-		
-		commandGateway.sendAndWait(updateMessageCommand);
-	
-	}
+//	@SagaEventHandler(associationProperty = "idMessage")
+//	@EndSaga
+//	private void handle(SaveReferenceEvent saveReferenceEvent) {
+//		log.info("Saved reference data in db with id::{}",saveReferenceEvent.getIdReference());
+//		
+//		UpdateMessageCommand updateMessageCommand = UpdateMessageCommand
+//				.builder()
+//				.idMessage(saveReferenceEvent.getIdMessage())
+//				.idReference(saveReferenceEvent.getIdReference())
+//				.referenceDateTime(saveReferenceEvent.getDateTime())
+//				.updateDateTime(LocalDateTime.now())
+//				.build();
+//		
+//		commandGateway.sendAndWait(updateMessageCommand);
+//	
+//	}
 
 }

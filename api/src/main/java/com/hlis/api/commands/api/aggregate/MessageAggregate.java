@@ -3,10 +3,10 @@ package com.hlis.api.commands.api.aggregate;
 import java.time.LocalDateTime;
 
 import org.axonframework.commandhandling.CommandHandler;
+import org.axonframework.eventhandling.EventHandler;
 import org.axonframework.eventsourcing.EventSourcingHandler;
 import org.axonframework.modelling.command.AggregateIdentifier;
 import org.axonframework.modelling.command.AggregateLifecycle;
-import org.axonframework.modelling.command.TargetAggregateIdentifier;
 import org.axonframework.spring.stereotype.Aggregate;
 import org.springframework.beans.BeanUtils;
 
@@ -24,11 +24,9 @@ import lombok.NoArgsConstructor;
 public class MessageAggregate {
 
 	@AggregateIdentifier
-	private Integer idMessage;
+	private String idMessage;
 	private String message;
-	
-	private Integer idReference;
-	
+	private String idReference;
 	private LocalDateTime referenceDateTime;
 	private LocalDateTime createDateTime;
 	private LocalDateTime updateDateTime;
@@ -42,6 +40,21 @@ public class MessageAggregate {
 		AggregateLifecycle.apply(saveMessageEvent);
 	}
 	
+	@CommandHandler
+	public void handle(UpdateMessageCommand updateMessageCommand) {
+		UpdateMessageEvent updateMessageEvent = new UpdateMessageEvent();
+		BeanUtils.copyProperties(updateMessageCommand, updateMessageEvent);
+		AggregateLifecycle.apply(updateMessageEvent);
+	}
+	
+	@EventHandler
+	public void on(UpdateMessageEvent updateMessageEvent) {
+		this.idMessage = updateMessageEvent.getIdMessage();
+		this.idReference = updateMessageEvent.getIdReference();
+		this.referenceDateTime = updateMessageEvent.getReferenceDateTime();
+		this.updateDateTime = updateMessageEvent.getUpdateDateTime();
+	}
+	
 	@EventSourcingHandler
 	public void on(SaveMessageEvent saveMessageEvent) {
 		this.message = saveMessageEvent.getMessage();
@@ -52,18 +65,5 @@ public class MessageAggregate {
 		this.updateDateTime = saveMessageEvent.getUpdateDateTime();
 	}
 	
-	@CommandHandler
-	public void handle(UpdateMessageCommand updateMessageCommand) {
-		UpdateMessageEvent updateMessageEvent = new UpdateMessageEvent();
-		BeanUtils.copyProperties(updateMessageCommand, updateMessageEvent);
-		AggregateLifecycle.apply(updateMessageEvent);
-	}
-	
-	@EventSourcingHandler
-	public void on(UpdateMessageEvent updateMessageEvent) {
-		this.idMessage = updateMessageEvent.getIdMessage();
-		this.idReference = updateMessageEvent.getIdReference();
-		this.referenceDateTime = updateMessageEvent.getReferenceDateTime();
-		this.updateDateTime = updateMessageEvent.getUpdateDateTime();
-	}
+
 }

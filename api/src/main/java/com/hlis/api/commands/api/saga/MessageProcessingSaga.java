@@ -12,8 +12,10 @@ import org.axonframework.queryhandling.QueryGateway;
 import org.axonframework.spring.stereotype.Saga;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.hlis.api.commands.api.command.SaveMessageCommand;
 import com.hlis.api.commands.api.events.SaveMessageEvent;
 import com.hlis.common.commands.SaveReferenceCommand;
+import com.hlis.common.commands.UpdateMessageCommand;
 import com.hlis.common.events.SaveReferenceEvent;
 import com.hlis.common.model.MessageModel;
 import com.hlis.common.query.ReferenceQuery;
@@ -55,12 +57,21 @@ public class MessageProcessingSaga {
 		commandGateway.sendAndWait(saveReferenceCommand);
 	}
 	
-	@SagaEventHandler(associationProperty = "idReference")
+	@SagaEventHandler(associationProperty = "idMessage")
 	@EndSaga
 	private void handle(SaveReferenceEvent saveReferenceEvent) {
 		log.info("Saved reference data in db with id::{}",saveReferenceEvent.getIdReference());
 		
+		UpdateMessageCommand updateMessageCommand = UpdateMessageCommand
+				.builder()
+				.idMessage(saveReferenceEvent.getIdMessage())
+				.idReference(saveReferenceEvent.getIdReference())
+				.referenceDateTime(saveReferenceEvent.getDateTime())
+				.updateDateTime(LocalDateTime.now())
+				.build();
 		
+		commandGateway.sendAndWait(updateMessageCommand);
+	
 	}
 
 }

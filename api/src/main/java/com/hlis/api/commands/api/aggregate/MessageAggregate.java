@@ -12,6 +12,8 @@ import org.springframework.beans.BeanUtils;
 
 import com.hlis.api.commands.api.command.SaveMessageCommand;
 import com.hlis.api.commands.api.events.SaveMessageEvent;
+import com.hlis.common.commands.UpdateMessageCommand;
+import com.hlis.common.events.UpdateMessageEvent;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -48,5 +50,20 @@ public class MessageAggregate {
 		this.idReference = saveMessageEvent.getIdReference();
 		this.referenceDateTime = saveMessageEvent.getReferenceDateTime();
 		this.updateDateTime = saveMessageEvent.getUpdateDateTime();
+	}
+	
+	@CommandHandler
+	public void handle(UpdateMessageCommand updateMessageCommand) {
+		UpdateMessageEvent updateMessageEvent = new UpdateMessageEvent();
+		BeanUtils.copyProperties(updateMessageCommand, updateMessageEvent);
+		AggregateLifecycle.apply(updateMessageEvent);
+	}
+	
+	@EventSourcingHandler
+	public void on(UpdateMessageEvent updateMessageEvent) {
+		this.idMessage = updateMessageEvent.getIdMessage();
+		this.idReference = updateMessageEvent.getIdReference();
+		this.referenceDateTime = updateMessageEvent.getReferenceDateTime();
+		this.updateDateTime = updateMessageEvent.getUpdateDateTime();
 	}
 }
